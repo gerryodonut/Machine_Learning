@@ -1,0 +1,85 @@
+---
+title: "Naive Bayes"
+author: 
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+- Okta Toyibah                - 1917051023 - Kelas B
+- Christofora Diana Yuliawati - 1917051026 - Kelas B
+
+## Library
+```{r}
+library(caret)
+library(naivebayes)
+library(e1071)
+library(ggplot2)
+library(corrplot)
+```
+
+## dataset
+```{r}
+dataku <- read.csv("D:/Documents/1. Okta Toyibah/2. Semester/5. Semester 5/Machine Learning/Lomba/Data_Fix.csv", sep = ",")
+View(dataku)
+summary(dataku)
+```
+
+## Structure Dataku
+```{r}
+str(dataku)
+```
+
+## as.factor Label
+```{r}
+dataku$label <- as.factor(dataku$label)
+```
+
+## Structure Dataku
+```{r}
+str(dataku)
+```
+
+## Data Sample
+```{r}
+datasample <- sample(2, nrow(dataku), replace = T, prob = c(0.7,0.3))
+datatrain <- dataku[datasample==1,]
+datatest <- dataku[datasample==2,]
+```
+
+## Naive Bayes Model
+```{r}
+nb <- naiveBayes(label~., data = datatrain)
+```
+
+## Prediction
+```{r}
+prediksi <- predict(nb, newdata = datatest)
+```
+
+## Confusion Matrix
+```{r}
+conma <- confusionMatrix(datatest$label,prediksi)
+conma
+conma$byClass
+```
+
+## Korelasi Rating & Price
+```{r}
+korelasi <- cor(dataku[,2],dataku[,4])
+korelasi
+```
+
+## Data Visualization
+```{r}
+hist(dataku[,2], xlab="Rating", main="Histogram Rating Restaurant")
+boxplot(dataku[,2], xlab="Rating", ylab="frequency", col="orange")
+plot(x=dataku[,2], y=dataku[,4], xlab = "Rating", ylab = "Price", col=3, pch=16, main="Plot Data Price & Rating")
+qqnorm(dataku$rating)
+qqline(dataku$rating)
+hist(dataku[,2], xlab="Rating", main="Histogram Rating Restaurant", col = "blue")
+```
